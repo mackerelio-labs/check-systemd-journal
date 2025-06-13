@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goreleaser/goreleaser/v2.9.0/www/docs/static/schema.json
+
+version: 2
+before:
+  hooks:
+    - go mod tidy
+env:
+  - CGO_ENABLED=1
+
+builds:
+  - id: amd64
+    goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - -s -w
+  - id: arm64
+    goos:
+      - linux
+    goarch:
+      - arm64
+    env:
+      - CC=aarch64-linux-gnu-gcc
+      - CXX=g++-aarch64-linux-gnu
+
+nfpms:
+  - maintainer: &maintainer Hatena <mackerel-developers@hatena.ne.jp>
+    ids:
+      - amd64
+      - arm64
+    formats:
+      - rpm
+      - deb
+    overrides:
+      deb:
+        # dpkg-shlibdeps -O check-systemd-journal 2>/dev/null
+        dependencies:
+          - libc6 (>= 2.34)
+          - libsystemd0
+      rpm:
+        # read ldd -v check-systemd-journal
+        dependencies:
+          - glibc
+          - systemd-libs
+release:
+  github:

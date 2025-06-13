@@ -1,0 +1,38 @@
+name: release
+
+on:
+  release:
+    types:
+    - published
+
+jobs:
+  goreleaser:
+    # this program used cgo, therefore build environment affect on can run a customer environments.
+    # please google on "version `GLIBC_2.xx' not found"
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: lufia/workflows/.github/actions/setup-multiarch@v0.7.0
+        with:
+          arch: arm64
+  
+      - name: setup dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          sudo apt-get install -y libsystemd-dev libsystemd-dev:arm64
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
