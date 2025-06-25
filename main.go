@@ -292,17 +292,15 @@ func matchLine(s string, regs, ignoreRegs []*regexp.Regexp) bool {
 		}
 	}
 
-	if len(ignoreRegs) > 0 {
-		exclude := true
-		for _, reg := range ignoreRegs {
-			if !reg.MatchString(s) {
-				exclude = false
-				break
-			}
-		}
-		if exclude {
-			return false
+	if len(ignoreRegs) == 0 {
+		return true
+	}
+
+	exclude := true
+	for _, reg := range ignoreRegs {
+		if len(reg.FindStringSubmatch(s)) > 0 {
+			exclude = false
 		}
 	}
-	return true
+	return exclude
 }
