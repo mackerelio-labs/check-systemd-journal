@@ -36,3 +36,31 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  goreleaser-compat-ubi8:
+    runs-on: ubuntu-latest
+    container:
+      image: redhat/ubi8
+    steps:
+      - name: setup dependencies
+        run: |
+          dnf -y install git gcc systemd-devel
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # https://github.com/actions/checkout/issues/1169
+      - name: Workaround to git config
+        run: git config --system --add safe.directory /__w/check-systemd-journal/check-systemd-journal
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          args: release --config .goreleaser-compat-ubi8.yml --skip archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goreleaser/goreleaser/v2.9.0/www/docs/static/schema.json
+
+version: 2
+before:
+  hooks:
+    - go mod tidy
+env:
+  - CGO_ENABLED=1
+
+builds:
+  - id: amd64
+    goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - -s -w
+
+checksum:
+  name_template: "{{ .ProjectName }}.el8.checksums.txt"
+
+nfpms:
+  - maintainer: &maintainer Hatena <mackerel-developers@hatena.ne.jp>
+    ids:
+      - amd64
+    formats:
+      - rpm
+    overrides:
+      rpm:
+        # read ldd -v check-systemd-journal
+        #
+        # keep for el8
+        # reference:
+        # Red Hat Enterprise Linux release 8.10 (Ootpa)
+        # glibc-2.28-251.el8_10.22.x86_64
+        # systemd-libs-239-82.el8_10.5.x86_64
+        dependencies:
+          - glibc >= 2.28
+          - systemd-libs >= 239
+
+    file_name_template: >-
+      {{- .PackageName -}}-{{- .Version }}-1.el8.
+      {{- if eq .Arch "amd64" -}}x86_64{{- end -}}
+      {{- .ConventionalExtension -}}
+
+release:
+  github:
