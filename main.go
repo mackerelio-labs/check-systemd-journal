@@ -36,13 +36,13 @@ var (
 func init() {
 	flag.Var(&patterns, "e", "`PATTERN`(s) to search for")
 	flag.Var(&ignorePatterns, "v", "NOT matched `PATTERN`(s) to search for")
-	flag.StringVar(&stateFile, "state-file", "", "state file path")
-	flag.StringVar(&unitName, "unit", "", "unit")
+	flag.StringVar(&stateFile, "state-file", "", "state `file` path")
+	flag.StringVar(&unitName, "unit", "", "`unit` name")
 	flag.StringVar(&priorityName, "priority", "", "priority name")
 	flag.Var(&facilitiesName, "facility", "facility(s) name")
 	flag.BoolVar(&quiet, "quiet", false, "quiet")
 	flag.BoolVar(&caseInsensitive, "icase", false, "Run a case insensitive match")
-	flag.BoolVar(&journalUser, "user", false, "user scope?")
+	flag.BoolVar(&journalUser, "user", false, "user scope")
 	flag.IntVar(&threshold, "check", 1, "threshold[=NUM]")
 
 	flag.Parse()
