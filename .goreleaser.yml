@@ -37,11 +37,11 @@ nfpms:
         # dpkg-shlibdeps -O check-systemd-journal 2>/dev/null
         dependencies:
           - libc6 (>= 2.34)
-          - libsystemd0
+          - libsystemd0 (>= 246)
       rpm:
         # read ldd -v check-systemd-journal
         dependencies:
-          - glibc
-          - systemd-libs
+          - glibc >= 2.34
+          - systemd-libs >= 246
 release:
   github:
