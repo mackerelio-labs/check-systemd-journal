@@ -1,1 +1,4 @@
 /check-systemd-journal
+
+# goreleaser
+dist/
