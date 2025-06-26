@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 
 	"github.com/mackerelio-labs/check-systemd-journal/internal/journal"
 )
@@ -38,12 +39,22 @@ func init() {
 	flag.Var(&ignorePatterns, "v", "NOT matched `PATTERN`(s) to search for")
 	flag.StringVar(&stateFile, "state-file", "", "state `file` path")
 	flag.StringVar(&unitName, "unit", "", "`unit` name")
-	flag.StringVar(&priorityName, "priority", "", "priority name")
-	flag.Var(&facilitiesName, "facility", "facility(s) name")
+	flag.StringVar(&priorityName, "priority", "", "`PRIORITY` name")
+	flag.Var(&facilitiesName, "facility", "`FACILITY`(s) name")
 	flag.BoolVar(&quiet, "quiet", false, "quiet")
 	flag.BoolVar(&caseInsensitive, "icase", false, "Run a case insensitive match")
 	flag.BoolVar(&journalUser, "user", false, "user scope")
 	flag.IntVar(&threshold, "check", 1, "threshold[=NUM]")
+
+	flag.Usage = func() {
+		fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
+		flag.CommandLine.PrintDefaults()
+		fmt.Fprint(flag.CommandLine.Output(), "\n", "Constants available in PRIORITY", "\n")
+		fmt.Fprintf(flag.CommandLine.Output(), "\t%s\n", strings.Join(journal.PriorityNames(), " "))
+		fmt.Fprint(flag.CommandLine.Output(), "Constants available in FACILITY", "\n")
+		f1, f2 := journal.FacilityNames()
+		fmt.Fprintf(flag.CommandLine.Output(), "\t%s\n\t%s\n", strings.Join(f1, " "), strings.Join(f2, " "))
+	}
 
 	flag.Parse()
 }
