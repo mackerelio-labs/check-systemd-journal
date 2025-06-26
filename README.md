@@ -45,7 +45,7 @@ Usage of check-systemd-journal:
 
 *-icase* option indicates *PATTERN*s are case-insensitive.
 
-*-v* option selects logs matched **NOT** by *PATTERN*. If one or more *-v* options, all *PATTERN*s combines with **AND** operator.
+*-v* option selects logs matched **NOT** by *PATTERN*. If one or more *-v* options, all *PATTERN*s combines with **OR** operator.
 
 *-quiet* option suppress outputs of selected logs.
 
@@ -145,7 +145,7 @@ Usage of check-systemd-journal:
 
 *-icase* オプションは、*PATTERN* が大文字と小文字を区別しないことを示します。
 
-*-v* オプションは、*PATTERN* に **NOT** 一致するログを選択します。*-v* オプションを1つ以上指定した場合、すべての *PATTERN* は **AND** 演算子で結合されます。
+*-v* オプションは、*PATTERN* に **NOT** 一致するログを選択します。*-v* オプションを1つ以上指定した場合、すべての *PATTERN* は **OR** 演算子で結合されます。
 
 *-quiet* オプションは、選択したログの出力を抑制します。
 
