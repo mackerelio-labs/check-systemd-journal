@@ -5,7 +5,7 @@ package journal
 type Priority int16
 
 const (
-	emerga Priority = iota
+	emerg Priority = iota
 	alert
 	crit
 	err
