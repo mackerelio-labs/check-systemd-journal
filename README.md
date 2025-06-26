@@ -14,12 +14,12 @@ Usage of check-systemd-journal:
     	threshold[=NUM] (default 1)
   -e PATTERN
     	PATTERN(s) to search for
-  -facility value
-    	facility(s) name
+  -facility FACILITY
+    	FACILITY(s) name
   -icase
     	Run a case insensitive match
-  -priority string
-    	priority name
+  -priority PRIORITY
+    	PRIORITY name
   -quiet
     	quiet
   -state-file file
@@ -30,6 +30,12 @@ Usage of check-systemd-journal:
     	user scope
   -v PATTERN
     	NOT matched PATTERN(s) to search for
+
+Constants available in PRIORITY
+	emerg alert crit err warning notice info debug
+Constants available in FACILITY
+	kern user mail daemon auth syslog lpr news uucp cron authpriv ftp
+	local0 local1 local2 local3 local4 local5 local6 local7
 ```
 
 
@@ -115,12 +121,12 @@ Usage of check-systemd-journal:
     	threshold[=NUM] (default 1)
   -e PATTERN
     	PATTERN(s) to search for
-  -facility value
-    	facility(s) name
+  -facility FACILITY
+    	FACILITY(s) name
   -icase
     	Run a case insensitive match
-  -priority string
-    	priority name
+  -priority PRIORITY
+    	PRIORITY name
   -quiet
     	quiet
   -state-file file
@@ -131,6 +137,12 @@ Usage of check-systemd-journal:
     	user scope
   -v PATTERN
     	NOT matched PATTERN(s) to search for
+
+Constants available in PRIORITY
+	emerg alert crit err warning notice info debug
+Constants available in FACILITY
+	kern user mail daemon auth syslog lpr news uucp cron authpriv ftp
+	local0 local1 local2 local3 local4 local5 local6 local7
 ```
 *-state-file* オプションが指定されると、**check-systemd-journal** は最後のカーソル位置を *FILE* に保存します。
 最初の **check-systemd-journal** 実行後の以降の実行では、カーソル位置を使用して新しい利用可能なログまでスキップします。
