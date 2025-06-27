@@ -104,7 +104,7 @@ Apache License (see LICENSE file)
 
 **check-systemd-journal** は、systemd ジャーナルのログを追跡し、フィルタに基づいて新規のログがあるかどうかを検査できるツールです。[mackerel-agent](https://mackerel.io/ja/docs/entry/howto/install-agent) のチェックプラグインとして実行することを想定していますが、単体のコマンドとしても利用可能です。
 
-systemd の ユニット、優先度、syslog ファシリティ、正規表現のいずれかでログをフィルタリングできます。正規表現は Go 言語の regexp ライブラリの[正規表現記法](https://pkg.go.dev/regexp/syntax)に従います。
+systemd のユニット、プライオリティ、syslog ファシリティ、正規表現のいずれかでログをフィルタリングできます。正規表現は Go 言語の regexp ライブラリの[正規表現記法](https://pkg.go.dev/regexp/syntax)に従います。
 
 ## 概要
 
@@ -133,26 +133,44 @@ Usage of check-systemd-journal:
 ```
 
 - *-check 回数*：フィルタリングされた有効な結果が指定の回数（デフォルトは 1 回）連続で繰り返されると、**check-systemd-journal** はステータスコード 2 を返します。mackerel-agent のプラグインとして利用している場合、これは重大なアラート（Critical）として扱われます。
-- *-e 正規表現*：ジャーナルの各行に対して正規表現マッチを行い、マッチしたものを選出します。正規表現の文字列は`"` または `'` で囲むのが安全です。このオプションは複数指定することができ、AND（すべて一致したものが選出）で評価されます。OR（いずれか一致したものが選出）評価をするには正規表現内で `|` を利用してください。
+- *-e 正規表現*：ジャーナルの各行に対して正規表現マッチを行い、マッチしたものを選出します。このオプションは複数指定することができ、AND（すべて一致したものが選出）で評価されます。OR（いずれか一致したものが選出）評価をするには正規表現内で `|` を利用してください。
 - *-facility ファシリティ*：ジャーナルの各行のうち指定のファシリティレベルのものを選出します。このオプションは複数指定することができ、OR（いずれか一致したものが選出）評価されます。ファシリティに指定できる文字列については [FACILITY](#Facilities) を参照してください。
 - *-icase*：このオプションを指定した場合、*-e* オプションおよび *-v* オプションの正規表現における大文字・小文字を区別しないようにします。
 - *-priority プライオリティ*：ジャーナルの各行のうち指定のプライオリティレベル以上のものを選出します。 プライオリティに指定できる文字列については [PRIORITY](#Priorities) を参照してください。
 - *-quiet*：選出した結果の標準出力への出力を抑制します。終了ステータスコードのみを利用したいときに指定してください。
-- *-state-file 状態ファイルパス*：ジャーナルの最後のカーソル位置を状態ファイルに保存します。次回の実行時には、保存されたカーソル位置を使用して新しく利用可能なログまでスキップされます。これを指定しない場合、保存されているジャーナルの先頭から常に収集されることになるので、mackerel-agent のプラグインとして利用する場合は必ず指定してください（たとえば `/var/tmp/mackerel-agent/sshd.state` など）。`--user` オプションを利用して特定のユーザーのサービスのジャーナルを対象とする場合、そのユーザーが書き込めるファイルパスである必要があります。
+- *-state-file 状態ファイルパス*：ジャーナルの最後のカーソル位置を状態ファイルに保存します。次回の実行時には、保存されたカーソル位置を使用して新しく利用可能なログまでスキップされます。これを指定しない場合、保存されているジャーナルの先頭から常に収集されることになるので、mackerel-agent のプラグインとして利用する場合は必ず指定してください（たとえば `/var/tmp/mackerel-agent/ssh.state` など）。`--user` オプションを利用して特定のユーザーのサービスのジャーナルを対象とする場合、そのユーザーが書き込めるファイルパスである必要があります。
 - *-unit ユニット*：ジャーナルの各行のうち指定の systemd ユニットに属するもののみを選出します。
-- *-user*：ユニットがシステムではなくユーザーに紐づく場合に指定します。*check-systemd-journal* を呼び出したユーザーのユニットが対象となるため、mackerel-agent のチェックプラグインとして使う場合は mackerel-agent の設定ファイルで◆→userの権限で実行はどう指定するっけ -kmuto←◆を指定する必要があります（*-state-file* の状態ファイルパスをそのユーザーが書き込める場所にする必要もあります）。
-- *-v 正規表現*：ジャーナルの各行に対して正規表現マッチを行い、マッチ**しない**ものを選出します。正規表現の文字列は`"` または `'` で囲むのが安全です。このオプションは複数指定することができ、AND（すべて一致しないものが選出）で評価されます。OR（いずれか一致したら選出しない）評価をするには正規表現内で `|` を利用してください。◆→確認 -kmuto←◆
+- *-user*：ユニットがシステムではなくユーザーに紐づく場合に指定します。*check-systemd-journal* を呼び出したユーザーのユニットが対象となるため、mackerel-agent のチェックプラグインとして使う場合は mackerel-agent の設定ファイルで user パラメータを指定する必要があります（mackerel-agent.conf の[設定項目](https://mackerel.io/ja/docs/entry/custom-checks#items)を参照してください。 *-state-file* の状態ファイルパスをそのユーザーが書き込める場所にする必要もあります）。
+- *-v 正規表現*：ジャーナルの各行に対して正規表現マッチを行い、マッチ**しない**ものを選出します。このオプションは複数指定することができ、OR（いずれか一致したら選出しない）で評価されます。
 
 ### 使用例
 
-◆→mackerel設定例をいくつか -kmuto←◆
+check-systemd-journal を使ってジャーナルログ監視を mackerel-agent で行う例を示します。
+
+ssh ユニットのジャーナルログで `authentication failure` という文字列を発見したときにアラートを発生させるには、以下のように mackerel-agent.conf に記述し、mackerel-agent を再起動します。
+
+```
+[plugin.checks.ssh_authentication_failure]
+command = ["check-systemd-journal", "-unit", "ssh", "-e", "authentication failure", "--state-file", "/var/tmp/mackerel-agent/ssh.state"]
+```
+
+プライオリティが err 以上のすべてのユニットのジャーナルログを対象に `failed` か `error` という文字列を大文字小文字問わず含んでいるものを探し、その中から `debug` という文字列を含む行は除くという監視の設定は、次のようになります。
+
+```
+[plugin.checks.failed_or_error]
+command = ["check-systemd-journal", "--priority", "err", "-e", "failed|error", "-icase", "-v", "debug", "--state-file", "/var/tmp/mackerel-agent/failed_or_error.state"]
+```
+
+このほか、単体で実行する例も示しておきます。
 
 ```
 check-systemd-journal -e pam_unix -priority info -facility authpriv -state-file statefile --user
 ```
 
+ユーザーに紐づくジャーナルのうち、プライオリティが info 以上、ファシリティが authpriv で、かつ `pam_unix` という文字列を含むログを抽出し、表示します。カーソル位置を状態ファイル `statefile` に書き出します。
+
 # ライセンス
 
 © 2025 Hatena Co., Ltd.
 
-Apache License (詳細は LICENSE ファイルを参照ください)
+Apache License (詳細は [LICENSE](./LICENSE) ファイルを参照してください)
