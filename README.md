@@ -57,7 +57,7 @@ To generate an alert when the string `authentication failure` is found in the jo
 
 ```
 [plugin.checks.ssh_authentication_failure]
-command = ["check-systemd-journal", "-unit", "ssh", "-e", "authentication failure", "-state-file", "/var/tmp/mackerel-agent/ssh.state"]
+command = ["check-systemd-journal", "-unit", "ssh.service", "-e", "authentication failure", "-state-file", "/var/tmp/mackerel-agent/ssh.state"]
 ```
 
 The monitoring settings to search for all journal logs of units with a priority of `err` or higher that contain the strings `failed` or `error` (case-insensitive) and exclude lines containing the string `debug` are as follows.
@@ -174,7 +174,7 @@ ssh ユニットのジャーナルログで `authentication failure` という�
 
 ```
 [plugin.checks.ssh_authentication_failure]
-command = ["check-systemd-journal", "-unit", "ssh", "-e", "authentication failure", "-state-file", "/var/tmp/mackerel-agent/ssh.state"]
+command = ["check-systemd-journal", "-unit", "ssh.service", "-e", "authentication failure", "-state-file", "/var/tmp/mackerel-agent/ssh.state"]
 ```
 
 プライオリティが err 以上のすべてのユニットのジャーナルログを対象に `failed` か `error` という文字列を大文字小文字問わず含んでいるものを探し、その中から `debug` という文字列を含む行は除くという監視の設定は、次のようになります。
