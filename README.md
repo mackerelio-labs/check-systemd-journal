@@ -44,7 +44,7 @@ Constants available in FACILITY
 - *-icase*: When this option is specified, the *-e* option and *-v* option do not distinguish between uppercase and lowercase letters in regular expressions.
 - *-priority PRIORITY*: Selects lines in the journal with a priority level equal to or higher than the specified priority. For details on the strings that can be specified for priority, refer to [PRIORITY](#Priorities).
 - *-quiet*: Suppresses the output of the selected results to standard output. Specify this option when you only want to use the exit status code.
-- *-state-file file*: Saves the last cursor position in the journal to a state file. On the next execution, the collection will skip to the newly available log starting from the saved cursor position. If this option is not specified, the collection will always start from the beginning of the saved journal. Therefore, this option must be specified when using this as a mackerel-agent plugin (e.g., `/var/tmp/mackerel-agent/ssh.state`). When using the `--user` option to target the journal of a specific user's service, the file path must be writable by that user.
+- *-state-file file*: Saves the last cursor position in the journal to a state file. On the next execution, the collection will skip to the newly available log starting from the saved cursor position. If this option is not specified, the collection will always start from the beginning of the saved journal. Therefore, this option must be specified when using this as a mackerel-agent plugin (e.g., `/var/tmp/mackerel-agent/ssh.state`). When using the `-user` option to target the journal of a specific user's service, the file path must be writable by that user.
 - *-unit unit*: Selects only the lines in the journal that belong to the specified systemd unit.
 - *-user*: Specify when the unit is linked to a user rather than the system. Since the units of the user who called *check-systemd-journal* are targeted, when using it as a check plugin for mackerel-agent, you must specify the user parameter in the mackerel-agent configuration file (see the [Configuration items](https://mackerel.io/docs/entry/custom-checks#items) in mackerel-agent.conf). The state file path for *-state-file* must also be writable by the user.
 - *-v PATTERN*: Performs regular expression matching on each line of the journal and selects those that do NOT match. This option can be specified multiple times and is evaluated as OR (select if any match is found).
@@ -57,20 +57,20 @@ To generate an alert when the string `authentication failure` is found in the jo
 
 ```
 [plugin.checks.ssh_authentication_failure]
-command = ["check-systemd-journal", "-unit", "ssh", "-e", "authentication failure", "--state-file", "/var/tmp/mackerel-agent/ssh.state"]
+command = ["check-systemd-journal", "-unit", "ssh", "-e", "authentication failure", "-state-file", "/var/tmp/mackerel-agent/ssh.state"]
 ```
 
 The monitoring settings to search for all journal logs of units with a priority of `err` or higher that contain the strings `failed` or `error` (case-insensitive) and exclude lines containing the string `debug` are as follows.
 
 ```
 [plugin.checks.failed_or_error]
-command = ["check-systemd-journal", "--priority", "err", "-e", "failed|error", "-icase", "-v", "debug", "--state-file", "/var/tmp/mackerel-agent/failed_or_error.state"]
+command = ["check-systemd-journal", "-priority", "err", "-e", "failed|error", "-icase", "-v", "debug", "-state-file", "/var/tmp/mackerel-agent/failed_or_error.state"]
 ```
 
 In addition, examples of standalone execution are also shown.
 
 ```
-check-systemd-journal -e pam_unix -priority info -facility authpriv -state-file statefile --user
+check-systemd-journal -e pam_unix -priority info -facility authpriv -state-file statefile -user
 ```
 
 In this example, logs associated with the user that have a priority of `info` or higher, a facility of `authpriv`, and contain the string `pam_unix` are selected and displayed. The cursor position is written to the state file `statefile`.
@@ -161,7 +161,7 @@ Constants available in FACILITY
 - *-icase*：このオプションを指定した場合、*-e* オプションおよび *-v* オプションの正規表現における大文字・小文字を区別しないようにします。
 - *-priority プライオリティ*：ジャーナルの各行のうち指定のプライオリティレベル以上のものを選出します。 プライオリティに指定できる文字列については [PRIORITY](#Priorities) を参照してください。
 - *-quiet*：選出した結果の標準出力への出力を抑制します。終了ステータスコードのみを利用したいときに指定してください。
-- *-state-file 状態ファイルパス*：ジャーナルの最後のカーソル位置を状態ファイルに保存します。次回の実行時には、保存されたカーソル位置を使用して新しく利用可能なログまでスキップされます。これを指定しない場合、保存されているジャーナルの先頭から常に収集されることになるので、mackerel-agent のプラグインとして利用する場合は必ず指定してください（たとえば `/var/tmp/mackerel-agent/ssh.state` など）。`--user` オプションを利用して特定のユーザーのサービスのジャーナルを対象とする場合、そのユーザーが書き込めるファイルパスである必要があります。
+- *-state-file 状態ファイルパス*：ジャーナルの最後のカーソル位置を状態ファイルに保存します。次回の実行時には、保存されたカーソル位置を使用して新しく利用可能なログまでスキップされます。これを指定しない場合、保存されているジャーナルの先頭から常に収集されることになるので、mackerel-agent のプラグインとして利用する場合は必ず指定してください（たとえば `/var/tmp/mackerel-agent/ssh.state` など）。`-user` オプションを利用して特定のユーザーのサービスのジャーナルを対象とする場合、そのユーザーが書き込めるファイルパスである必要があります。
 - *-unit ユニット*：ジャーナルの各行のうち指定の systemd ユニットに属するもののみを選出します。
 - *-user*：ユニットがシステムではなくユーザーに紐づく場合に指定します。*check-systemd-journal* を呼び出したユーザーのユニットが対象となるため、mackerel-agent のチェックプラグインとして使う場合は mackerel-agent の設定ファイルで user パラメータを指定する必要があります（mackerel-agent.conf の[設定項目](https://mackerel.io/ja/docs/entry/custom-checks#items)を参照してください。 *-state-file* の状態ファイルパスをそのユーザーが書き込める場所にする必要もあります）。
 - *-v 正規表現*：ジャーナルの各行に対して正規表現マッチを行い、マッチ**しない**ものを選出します。このオプションは複数指定することができ、OR（いずれか一致したら選出しない）で評価されます。
@@ -174,20 +174,20 @@ ssh ユニットのジャーナルログで `authentication failure` という�
 
 ```
 [plugin.checks.ssh_authentication_failure]
-command = ["check-systemd-journal", "-unit", "ssh", "-e", "authentication failure", "--state-file", "/var/tmp/mackerel-agent/ssh.state"]
+command = ["check-systemd-journal", "-unit", "ssh", "-e", "authentication failure", "-state-file", "/var/tmp/mackerel-agent/ssh.state"]
 ```
 
 プライオリティが err 以上のすべてのユニットのジャーナルログを対象に `failed` か `error` という文字列を大文字小文字問わず含んでいるものを探し、その中から `debug` という文字列を含む行は除くという監視の設定は、次のようになります。
 
 ```
 [plugin.checks.failed_or_error]
-command = ["check-systemd-journal", "--priority", "err", "-e", "failed|error", "-icase", "-v", "debug", "--state-file", "/var/tmp/mackerel-agent/failed_or_error.state"]
+command = ["check-systemd-journal", "-priority", "err", "-e", "failed|error", "-icase", "-v", "debug", "-state-file", "/var/tmp/mackerel-agent/failed_or_error.state"]
 ```
 
 このほか、単体で実行する例も示しておきます。
 
 ```
-check-systemd-journal -e pam_unix -priority info -facility authpriv -state-file statefile --user
+check-systemd-journal -e pam_unix -priority info -facility authpriv -state-file statefile -user
 ```
 
 ユーザーに紐づくジャーナルのうち、プライオリティが info 以上、ファシリティが authpriv で、かつ `pam_unix` という文字列を含むログを抽出し、表示します。カーソル位置を状態ファイル `statefile` に書き出します。
