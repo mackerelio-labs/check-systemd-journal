@@ -14,12 +14,12 @@ Usage of check-systemd-journal:
     	threshold[=NUM] (default 1)
   -e PATTERN
     	PATTERN(s) to search for
-  -facility value
-    	facility(s) name
+  -facility FACILITY
+    	FACILITY(s) name
   -icase
     	Run a case insensitive match
-  -priority string
-    	priority name
+  -priority PRIORITY
+    	PRIORITY name
   -quiet
     	quiet
   -state-file file
@@ -30,6 +30,12 @@ Usage of check-systemd-journal:
     	user scope
   -v PATTERN
     	NOT matched PATTERN(s) to search for
+
+Constants available in PRIORITY
+	emerg alert crit err warning notice info debug
+Constants available in FACILITY
+	kern user mail daemon auth syslog lpr news uucp cron authpriv ftp
+	local0 local1 local2 local3 local4 local5 local6 local7
 ```
 
 
@@ -45,7 +51,7 @@ Usage of check-systemd-journal:
 
 *-icase* option indicates *PATTERN*s are case-insensitive.
 
-*-v* option selects logs matched **NOT** by *PATTERN*. If one or more *-v* options, all *PATTERN*s combines with **AND** operator.
+*-v* option selects logs matched **NOT** by *PATTERN*. If one or more *-v* options, all *PATTERN*s combines with **OR** operator.
 
 *-quiet* option suppress outputs of selected logs.
 
@@ -114,12 +120,12 @@ Usage of check-systemd-journal:
     	threshold[=NUM] (default 1)
   -e PATTERN
     	PATTERN(s) to search for
-  -facility value
-    	facility(s) name
+  -facility FACILITY
+    	FACILITY(s) name
   -icase
     	Run a case insensitive match
-  -priority string
-    	priority name
+  -priority PRIORITY
+    	PRIORITY name
   -quiet
     	quiet
   -state-file file
@@ -130,6 +136,12 @@ Usage of check-systemd-journal:
     	user scope
   -v PATTERN
     	NOT matched PATTERN(s) to search for
+
+Constants available in PRIORITY
+	emerg alert crit err warning notice info debug
+Constants available in FACILITY
+	kern user mail daemon auth syslog lpr news uucp cron authpriv ftp
+	local0 local1 local2 local3 local4 local5 local6 local7
 ```
 
 - *-check 回数*：フィルタリングされた有効な結果が指定の回数（デフォルトは 1 回）連続で繰り返されると、**check-systemd-journal** はステータスコード 2 を返します。mackerel-agent のプラグインとして利用している場合、これは重大なアラート（Critical）として扱われます。
@@ -173,4 +185,4 @@ check-systemd-journal -e pam_unix -priority info -facility authpriv -state-file 
 
 © 2025 Hatena Co., Ltd.
 
-Apache License (詳細は [LICENSE](./LICENSE) ファイルを参照してください)
+Apache License（詳細は [LICENSE](./LICENSE) ファイルを参照してください）

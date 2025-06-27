@@ -55,7 +55,7 @@ func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
-	_ = x[emerga-0]
+	_ = x[emerg-0]
 	_ = x[alert-1]
 	_ = x[crit-2]
 	_ = x[err-3]
@@ -65,9 +65,9 @@ func _() {
 	_ = x[debug-7]
 }
 
-const _Priority_name = "emergaalertcriterrwarningnoticeinfodebug"
+const _Priority_name = "emergalertcriterrwarningnoticeinfodebug"
 
-var _Priority_index = [...]uint8{0, 6, 11, 15, 18, 25, 31, 35, 40}
+var _Priority_index = [...]uint8{0, 5, 10, 14, 17, 24, 30, 34, 39}
 
 func (i Priority) String() string {
 	if i < 0 || i >= Priority(len(_Priority_index)-1) {

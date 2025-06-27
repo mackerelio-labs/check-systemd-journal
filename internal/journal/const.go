@@ -5,7 +5,7 @@ package journal
 type Priority int16
 
 const (
-	emerga Priority = iota
+	emerg Priority = iota
 	alert
 	crit
 	err
@@ -42,3 +42,20 @@ const (
 	local6
 	local7
 )
+
+func FacilityNames() (f1 []string, f2 []string) {
+	for i := 0; i <= 11; i++ {
+		f1 = append(f1, Facility(i).String())
+	}
+	for i := 16; i <= 23; i++ {
+		f2 = append(f2, Facility(i).String())
+	}
+	return
+}
+
+func PriorityNames() (p []string) {
+	for i := 0; i <= 7; i++ {
+		p = append(p, Priority(i).String())
+	}
+	return
+}
